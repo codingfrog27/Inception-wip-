@@ -1,7 +1,7 @@
+FROM debian:bullseye
 
 #base image (the base OS that we will build our image on top of)
 
-FROM debian:bullseye
 
 
 #update all package lists and upgrade all installed pckgs to latest (-y == auto yes to all prompts)
@@ -15,12 +15,12 @@ RUN apt-get install -y mariadb-server netcat
 
 
 #copy the config from our host computer to container
-COPY ./mdb-conf.sh /mdb-conf.sh
+COPY ./MariaDB_config.sh /MariaDB_config.sh
 
 
 # conf script isn't executable by default
-RUN chmod +x /mdb-conf.sh
+RUN chmod +x /MariaDB_config.sh
 
 
 #default command to run when container starts
-ENTRYPOINT ["./mdb-conf.sh"]
+ENTRYPOINT ["./MariaDB_config.sh"]
