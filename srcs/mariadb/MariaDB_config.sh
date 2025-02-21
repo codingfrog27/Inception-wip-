@@ -26,4 +26,4 @@ mariadb -e "FLUSH PRIVILEGES;"
 #so less chance of it not working :)
 #and more importantly it's a continues command so no unexpected container closing! B)
 mysqld_safe --port=3306 --bind-address=0.0.0.0 --datadir='/var/lib/mysql'
-#opens default port and will ocnnect to any IP (since container IP's can change)
+#opens default port, will connect to any IP (since container IP's can change) and stores data in default dir.

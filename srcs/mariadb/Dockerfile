@@ -6,7 +6,7 @@ FROM debian:bullseye
 
 #update all package lists and upgrade all installed pckgs to latest (-y == auto yes to all prompts)
 
-RUN apt get update && apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y
 
 #install mariadb server and netcat (netcat is for pinging)
 
