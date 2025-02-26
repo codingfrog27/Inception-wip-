@@ -6,3 +6,7 @@ DEPRECATED: The legacy builder is deprecated and will be removed in a future rel
 
 
 writing new private key to '/etc/nginx/ssl/inception.key
+
+ERROR: for mariadb  Cannot start service mariadb: network inception not found
+ERROR: No containers to start
+ERROR: 1
