@@ -6,7 +6,7 @@ services:
   mariadb:
     image: mariadb:user
     container_name: mariadb
-    build: ./mariadb
+    build: ./mariadb # == that I want to build the image from the Dockerfile in the mariadb folder instead of dockerhub
     volumes:
       - mariadb:/var/lib/mysql
     env_file :
@@ -38,7 +38,7 @@ services:
     image: wordpress:user
     container_name: wordpress
     build: ./wordpress
-    depends_on:
+    depends_on: #makes sure mariadb gets build first!!
       mariadb:
         condition: service_healthy
     volumes:
@@ -49,7 +49,7 @@ services:
       - inception
     restart: always
 
-# the volumes part
+# FOR non VM change device path
 volumes:
   mariadb:
     name: mariadb
