@@ -11,7 +11,7 @@ mv wp-cli.phar /usr/local/bin/wp
 
 
 
-
+mkdir -p /var/www/wordpress #??
 
 # give permission to wordpress directory && change owner of wordpress directory to www-data
 cd /var/www/wordpress
