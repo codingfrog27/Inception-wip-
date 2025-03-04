@@ -6,7 +6,7 @@ FROM debian:bullseye
 
 #update all package lists and upgrade all installed pckgs to latest (-y == auto yes to all prompts)
 
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update -y && apt-get upgrade -y
 
 #install mariadb server and netcat (netcat is for pinging)
 
@@ -21,6 +21,7 @@ COPY ./MariaDB_config.sh /MariaDB_config.sh
 # conf script isn't executable by default
 RUN chmod +x /MariaDB_config.sh
 
+EXPOSE 3306
 
 #default command to run when container starts
 ENTRYPOINT ["./MariaDB_config.sh"]

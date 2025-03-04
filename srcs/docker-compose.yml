@@ -1,12 +1,14 @@
 # version: "3.8" obsolete?
 
 # the services part
-services:
 #mariadb
+# == that I want to build the image from the Dockerfile
+# in the mariadb folder instead of dockerhub
+services:
   mariadb:
     image: mariadb:user
     container_name: mariadb
-    build: ./mariadb # == that I want to build the image from the Dockerfile in the mariadb folder instead of dockerhub
+    build: ./mariadb
     volumes:
       - mariadb:/var/lib/mysql
     env_file :
@@ -34,11 +36,12 @@ services:
       - inception
     restart: always
 #wordpress
+ #makes sure mariadb gets build first!!
   wordpress:
     image: wordpress:user
     container_name: wordpress
     build: ./wordpress
-    depends_on: #makes sure mariadb gets build first!!
+    depends_on:
       mariadb:
         condition: service_healthy
     volumes:
