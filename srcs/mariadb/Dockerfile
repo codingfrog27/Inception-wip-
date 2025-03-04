@@ -22,6 +22,7 @@ COPY ./MariaDB_config.sh /MariaDB_config.sh
 RUN chmod +x /MariaDB_config.sh
 
 EXPOSE 3306
+#??
 
 #default command to run when container starts
 ENTRYPOINT ["./MariaDB_config.sh"]
