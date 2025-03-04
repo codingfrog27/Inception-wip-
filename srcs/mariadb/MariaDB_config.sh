@@ -37,10 +37,9 @@ exec mysqld
 # #service runs a program without env variables and runs it from /
 # service mariadb start
 #service runs a program without env variables and runs it from /
-service mariadb start
-echo "MYSQL_DB: ${MYSQL_DB}"
-echo "MYSQL_USER: ${MYSQL_USER}"
-echo "MYSQL_PASSWORD: ${MYSQL_PASSWORD}"
+# echo "MYSQL_DB: ${MYSQL_DB}"
+# echo "MYSQL_USER: ${MYSQL_USER}"
+# echo "MYSQL_PASSWORD: ${MYSQL_PASSWORD}"
 
 # #not for any infinite shenanigans, simply giving MDB time to startup :)
 # sleep 5 
@@ -54,7 +53,7 @@ echo "MYSQL_PASSWORD: ${MYSQL_PASSWORD}"
 # mariadb -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
 
 
-mariadb -e "GRANT ALL PRIVILEGES ON ${MYSQL_DB}.* TO \`${MYSQL_USER}\`@'%';"
+# mariadb -e "GRANT ALL PRIVILEGES ON ${MYSQL_DB}.* TO \`${MYSQL_USER}\`@'%';"
 # .* for all tables in DB
 #@ % means can connect from any host
 
