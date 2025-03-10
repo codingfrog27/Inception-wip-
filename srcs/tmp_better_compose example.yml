@@ -1,0 +1,74 @@
+version: "3.8"                                     # can leave this away
+
+services:
+    mariadb:
+        container_name: mariadb                    # Names the container "mariadb" for easier reference
+        image: mariadb                             # Pulls the official MariaDB image
+        build: 
+            context: requirements/mariadb          # Builds the image from a Dockerfile located in "requirements/mariadb"
+        environment:
+            DOMAIN_NAME: ${DOMAIN_NAME}            # Passes environment variables to the build process
+            DB_USER: ${DB_USER}
+            DB_USER_PASSWORD: ${DB_USER_PASSWORD}
+        restart: unless-stopped                    # Restarts the container automatically unless explicitly stopped
+        env_file:
+            - .env                                 # Loads environment variables from the ".env" file
+        volumes:
+            - mariadb:/var/lib/mariadb             # Binds the host directory to the MariaDB data directory inside the container.
+        networks:
+            - inception                            # Connects to the "inception" network, allowing it to communicate with other services
+    nginx:
+        container_name: nginx                      # Names the container "nginx"
+        image: nginx                               # Uses the official Nginx image
+        build: requirements/nginx                  # Builds the image from a Dockerfile in "requirements/nginx"
+        depends_on:
+            - wordpress                            # Ensures that the "wordpress" service is started before "nginx"
+        restart: unless-stopped                    # Restarts the container unless explicitly stopped
+        env_file:
+            - .env                                 # Loads environment variables from the ".env" file
+        ports:
+            - "443:443"                            # Exposes port 443 for HTTPS traffic
+        volumes:
+            - nginx:/var/www/html                  # Binds the host directory to the Nginx data directory inside the container.
+        networks:
+            - inception                            # Connects to the "inception" network, allowing it to communicate with other services
+    wordpress:
+        container_name: wordpress                  # Names the container "wordpress"
+        image: wordpress                           # Uses the official WordPress image
+        build:
+            context: requirements/wordpress        # Builds the image from a Dockerfile located in "requirements/wordpress"
+        environment:
+            DOMAIN_NAME: ${DOMAIN_NAME}            # Passes environment variables to the build process
+            DB_USER: ${DB_USER}
+            DB_USER_PASSWORD: ${DB_USER_PASSWORD}
+        env_file:
+            - .env                                 # Loads environment variables from the ".env" file
+        restart: unless-stopped                    # Restarts the container unless explicitly stopped
+        depends_on:
+            - mariadb                              # Ensures that MariaDB is started before WordPress
+        volumes:
+            - wordpress:/var/www/html              # Binds the WordPress files directory from the host to the container. 
+        networks:
+            - inception                            # Connects to the "inception" network, allowing it to communicate with other services
+
+# Network configuration
+networks:
+    inception:
+        name: inception                            # Defines a custom bridge network named "inception" to allow communication between containers.
+
+# Volumes configuration to persist data
+volumes:
+    mariadb:
+        name: mariadb                              # Defines the volume name as "mariadb"
+        driver: local                              # Volume is located on the local host system
+        driver_opts:
+            type: none                             # No special filesystem type is enforced
+            o: bind                                # Bind mounts the host directory to the container
+            device: $(HOME/data/mariadb            # This is the host directory where MariaDB will persist its database files
+    wordpress:
+        name: wordpress                            # Defines the volume name as "wordpress"
+        driver: local                              # Volume is located on the local host system
+        driver_opts:
+          type: none                               # No special filesystem type is enforced
+          o: bind                                  # Bind mounts the host directory to the container
+          device: ${HOME/data/wordpress            # This is the host directory where WordPress fwill persist its database files

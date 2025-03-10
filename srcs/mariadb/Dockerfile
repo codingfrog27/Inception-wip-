@@ -2,6 +2,8 @@ FROM debian:bullseye
 
 #base image (the base OS that we will build our image on top of)
 
+# Avoid prompts during package installation
+# ENV DEBIAN_FRONTEND=noninteractive
 
 
 #update all package lists and upgrade all installed pckgs to latest (-y == auto yes to all prompts)
