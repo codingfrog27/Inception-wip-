@@ -11,20 +11,24 @@ services:
       - MYSQL_ROOT_PASSWORD
     ports:
       - "3306:3306" #to test db from host
-  # nginx:
-  #    build:
-  #     dockerfile: dockerfile
-  #     context: ./nginx/
-  #     #ports
-  # wordpress:
-  #     build:
-  #     dockerfile: dockerfile
-  #     context: ./wordpress/
+    volumes:
+      - mariadb:/var/lib/mysql
+
+  nginx:
+     build:
+      dockerfile: dockerfile
+      context: ./nginx/
+      #ports
+  wordpress:
+      build:
+      dockerfile: dockerfile
+      context: ./wordpress/
 
 
   # exposing ports so you can access them from host system?
 
-
+volumes:
+  mariadb: {}
 
 
 # # video

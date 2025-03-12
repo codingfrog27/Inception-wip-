@@ -15,6 +15,7 @@ RUN rm -rf /var/lib/apt/lists/*
 #move startup script into container, sql images will autorun scripts in htis folder
 COPY init.sql.template /docker-entrypoint-initdb.d/
 COPY set-env.sh /usr/local/bin/
+COPY maria_conf.cnf /
 
 RUN chmod +x /usr/local/bin/set-env.sh
 
