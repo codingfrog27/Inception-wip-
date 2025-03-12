@@ -3,6 +3,12 @@ services:
     build:
       dockerfile: dockerfile
       context: ./mariadb/
+    env_file: .env
+    environment: #to state vars being used, optional
+      - DB_NAME
+      - DB_USER
+      - DB_PASS
+      - MYSQL_ROOT_PASSWORD
       # ports
     environment:
       - TEST=value
