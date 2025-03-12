@@ -9,18 +9,17 @@ services:
       - DB_USER
       - DB_PASS
       - MYSQL_ROOT_PASSWORD
-      # ports
-    environment:
-      - TEST=value
-  nginx:
-     build:
-      dockerfile: dockerfile
-      context: ./nginx/
-      #ports
-  wordpress:
-      build:
-      dockerfile: dockerfile
-      context: ./wordpress/
+    ports:
+      - "3306:3306" #to test db from host
+  # nginx:
+  #    build:
+  #     dockerfile: dockerfile
+  #     context: ./nginx/
+  #     #ports
+  # wordpress:
+  #     build:
+  #     dockerfile: dockerfile
+  #     context: ./wordpress/
 
 
   # exposing ports so you can access them from host system?
@@ -28,16 +27,16 @@ services:
 
 
 
-# video
-  depends_on:
-    service_name:
-      condition: service_healthy
+# # video
+#   depends_on:
+#     service_name:
+#       condition: service_healthy
 
-healthcheck:
-  test: ["ping command"] 
-  interval: 5s
-  timeout: 2s
-  retries: 5
-depends_on:
-  service_name:
-    condition: service_started
+# healthcheck:
+#   test: ["ping command"] 
+#   interval: 5s
+#   timeout: 2s
+#   retries: 5
+# depends_on:
+#   service_name:
+#     condition: service_started
