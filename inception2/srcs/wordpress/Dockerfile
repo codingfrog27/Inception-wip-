@@ -13,6 +13,7 @@ RUN apt-get update && \
     php-soap \
     php-intl \
     php-zip \
+    curl \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,5 +34,12 @@ RUN chown -R www-data:www-data /var/www/html
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM
-CMD ["php-fpm7.4", "-F"]
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+
+
+
+CMD ["entrypoint.sh"]
+
+

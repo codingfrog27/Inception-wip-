@@ -6,10 +6,14 @@ FROM debian:bullseye
 
 #base things up to date and install nginx and openssl
 
-RUN apt-get update && apt-get upgrade -y
+# RUN apt-get update && apt-get upgrade -y
 
-RUN apt-get install -y nginx openssl
+# RUN apt-get install -y nginx openssl gettext
+# RUN apt-get update && apt-get install -y --fix-missing nginx openssl gettext && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --fix-missing  nginx openssl gettext iputils-ping netcat curl bash && rm -rf /var/lib/apt/lists/*
 
+
+# remove part coulddd maybeeee give issues
 
 
 #make ssl dir and generate certificate (-p == no error if existing)
