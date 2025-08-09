@@ -17,6 +17,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 RUN  mkdir -p /run/php
+RUN  mkdir -p /var/www/html
 
 # Download and extract WordPress
 RUN wget https://wordpress.org/latest.tar.gz -O /tmp/wordpress.tar.gz && \

@@ -1,46 +1,43 @@
 services:
   mariadb:
     build:
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
       context: ./mariadb/
     env_file: .env
-    environment: #to state vars being used, optional
+    environment:
       - DB_NAME
       - DB_USER
       - DB_PASS
       - MYSQL_ROOT_PASSWORD
     ports:
-      - "3306:3306" #to test db from host
+      - "3307:3306"
     volumes:
       - mariadb:/var/lib/mysql
 
-  nginx:
-     build:
-      dockerfile: dockerfile
-      context: ./nginx/
-      #ports
   wordpress:
-      build:
-      dockerfile: dockerfile
+    build:
+      dockerfile: Dockerfile
       context: ./wordpress/
+    env_file: .env
+    depends_on:
+      - mariadb
+    ports:
+      - "9000:9000"
+    volumes:
+      - wordpress:/var/www/html
 
-
-  # exposing ports so you can access them from host system?
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx/
+    env_file: .env
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress:/var/www/html:ro
 
 volumes:
   mariadb: {}
-
-
-# # video
-#   depends_on:
-#     service_name:
-#       condition: service_healthy
-
-# healthcheck:
-#   test: ["ping command"] 
-#   interval: 5s
-#   timeout: 2s
-#   retries: 5
-# depends_on:
-#   service_name:
-#     condition: service_started
+  wordpress: {}
