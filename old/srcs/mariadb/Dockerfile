@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 #base image (the base OS that we will build our image on top of)
 
