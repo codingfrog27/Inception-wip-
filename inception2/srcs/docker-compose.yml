@@ -1,5 +1,6 @@
 services:
   mariadb:
+    restart: always
     build:
       dockerfile: Dockerfile
       context: ./mariadb/
@@ -20,6 +21,7 @@ services:
       retries: 5
 
   wordpress:
+    restart: always
     build:
       dockerfile: Dockerfile
       context: ./wordpress/
@@ -30,13 +32,14 @@ services:
       - "9000:9000"
     volumes:
       - wordpress:/var/www/html
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000"] 
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    environment:
+      WORDPRESS_DEBUG: "true"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', true);
 
   nginx:
+    restart: always
     build:
       dockerfile: Dockerfile
       context: ./nginx/
