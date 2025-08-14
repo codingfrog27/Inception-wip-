@@ -15,3 +15,10 @@ Docker is like a mini VM running off the same host kernel, very convinient and u
 
 - BUT ALSO 'RUN apt-get update && \
 	apt-get upgrade -y' is nice to keep seperate since every container will need it and docker can cache it and share it (hooray out of scope optimisation)
+
+
+
+
+## rebuilding mariadb quick command
+
+docker stop mariadb-test 2>/dev/null && docker rm mariadb-test 2>/dev/null && rm -rf /tmp/mariadb-test-data && docker rmi mariadb-test 2>/dev/null && docker build -t mariadb-test . && docker run -d --name mariadb-test -p 3306:3306 -v /tmp/mariadb-test-data:/var/lib/mysql mariadb-test
