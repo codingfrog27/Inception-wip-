@@ -9,7 +9,7 @@ RUN apt-get update && \
 	apt-get upgrade -y
 	
 	
-RUN install -y openssl nginx php-fpm && \
+RUN apt-get install -y openssl nginx php-fpm && \
 	mkdir -p /etc/nginx/ssl && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
@@ -24,10 +24,14 @@ RUN openssl req -x509 -nodes -newkey rsa:2048 \
 	-keyout /etc/nginx/ssl/coolkey.key \
 	-out /etc/nginx/ssl/coolcert.crt \
 	-subj "/C=NL/O=42/CN=mde-cloe.42.fr/UID=mde-cloe" && \
-	chmod 600 /etc/nginx/ssl/inception.key && \
+	chmod 600 /etc/nginx/ssl/coolkey.key && \
 	echo "cert and key generated! Starting Nginx now...\n"
 
 COPY ./tools/nginx.conf /etc/nginx/conf.d
+
+#to test seperately, copy in this index and make it the sandard index (and comment out the php loc)
+#COPY ./tools/index.html /var/www/html/wordpress/index.html
+#RUN chmod 777 /var/www/html/wordpress/index.html
 
 #listens to port 443 in docker network, but expose actually doesnt do anything the compose file handles this, its just for clarity
 #EXPOSE 443

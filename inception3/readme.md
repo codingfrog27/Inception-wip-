@@ -11,4 +11,7 @@ Docker is like a mini VM running off the same host kernel, very convinient and u
 	Upgrade is actually installing these updates if anything is out of date, at first I thought it wouldn't be applicable since everything except the base linux image is installed fresh, which should be the penultimate version anyways. But you should still upgrade to install smaller updates for said OS version, for security's sake too!
 
 
-> **Quick tip** for optimisation it's best to minimize the amount of 'RUN' commands used, since docker will create a new image layer for each one, so a big chained command with lots of &&'s is the way to go
+- **Quick tip** for optimisation it's best to minimize the amount of 'RUN' commands used, since docker will create a new image layer for each one, so a big chained command with lots of &&'s is the way to go
+
+- BUT ALSO 'RUN apt-get update && \
+	apt-get upgrade -y' is nice to keep seperate since every container will need it and docker can cache it and share it (hooray out of scope optimisation)
