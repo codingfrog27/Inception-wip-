@@ -1,70 +1,74 @@
+# Define the services (containers)
 services:
-      mariadb: 
-            build: requirements/mariadb
-            container_name: mariadb  
-            restart: unless-stopped   
-            env_file:
-                  - .env    
-            volumes: 
-                  - mariadb:/var/lib/mysql                            # Bind the mariadb volume to the MySQL data directory in the container (Ensures the MySQL database persists across container restarts)
-            networks:
-                  - inception                                         # Connects to the "inception" network, allowing it to communicate with other services
+  # MariaDB Database Service
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    env_file: .env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - inception
+    restart: always
+    healthcheck:
+      # This check ensures the database is fully initialized and ready for connections.
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
-      wordpress:                      
-            build: requirements/wordpress                      
-            container_name: wordpress                               
-            depends_on:
-                  - mariadb                        
-            restart: unless-stopped  
-            environment:                                              # Environment variables injected into WordPress container (NEED THIS: Because variables are NOT passed at Runtime, unlike Mariadb or Nginx)
-                  DOMAIN_NAME: ${DOMAIN_NAME}                                         
-                  WP_DATABASE_NAME: ${WP_DATABASE_NAME}
-                  WP_ADMIN: ${WP_ADMIN}
-                  WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
-                  WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
-                  WP_USER: ${WP_USER}
-                  WP_USER_PASSWORD: ${WP_USER_PASSWORD}
-                  WP_USER_EMAIL: ${WP_USER_EMAIL}
-            env_file:
-                  - .env                                              # Loads environment variables from the ".env" file
-            volumes:
-                  - wordpress:/var/www/html                           # Bind the WordPress volume to the WordPress root directory in the container (Ensures the MySQL database persists across container restarts)
-            networks:
-                  - inception                                      
+ # WordPress Service
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    env_file: .env
+    volumes:
+      # The wordpress files are mounted here. Nginx will also use this volume.
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+    restart: always
+    depends_on:
+      mariadb:
+        # This is CRITICAL: it tells WordPress to wait until MariaDB is healthy.
+        condition: service_healthy
+    # extra_hosts:  #suggested by chat cuz host machine /etc/host doesnt always get inherited
+    #   - "mywordpress.local:127.0.0.1"
 
-      nginx:                                                         
-            build: requirements/nginx                                
-            container_name: nginx                                     # Names the container "nginx" for easier reference
-            depends_on:
-                  - wordpress                                         # Ensures that the NGINX container starts after the WordPress container
-            restart: unless-stopped                                   # Restarts the container automatically unless explicitly stopped
-            env_file:
-                  - .env                                              # Loads environment variables from the ".env" file
-            ports:
-                  - "443:443"                                         # Exposes port 443 for HTTPS traffic, allowing the server to handle SSL-secured connections
-            volumes:
-                  - wordpress:/var/www/html                           # Mounts the WordPress files from the "wordpress" volume
-            networks:
-                  - inception                                         # Connects to the "inception" network, allowing it to communicate with other services
+  # Nginx Web Server Service
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    env_file: .env
+    ports:
+      # Maps port 443 on your computer to port 443 in the container.
+      - "443:443"
+    volumes:
+      # Nginx needs access to the WordPress files to serve them.
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+    restart: always
+    depends_on:
+      - wordpress
 
-networks:                                                             # Network configuration
-      inception:                                                      # The name of the network within the Compose file. It's just an identifier.
-            name: inception_net                                       # The actual name of the network that Docker will create
-            driver: bridge                                            # The network driver, which is "bridge" by default for containers to communicate with each other
+# Define the volumes for persistent data storage
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ~/data/mariadb # Creates a folder in your home directory
+      o: bind
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ~/data/wordpress # Creates a folder in your home directory
+      o: bind
 
-volumes:                                                              # Volumes configuration to persist data across container restarts
-      mariadb:                                                        # Configures the MariaDB volume
-            name: mariadb_vol                                         # Sets the name of the volume to "mariadb_vol"
-            driver: local                                             # Volume is located locally
-            driver_opts:
-                  type: none                                          # No special filesystem type is enforced
-                  o: bind                                             # Binds the volume to a host directory
-                  device: ${HOME}/data/mariadb                        # The host directory where MariaDB data will be stored
-
-      wordpress:                                                      # Configures the WordPress volume
-            name: wordpress_vol                                       # Sets the name of the volume to "wordpress_vol"
-            driver: local                                             # Volume is located locally
-            driver_opts:
-                  type: none                                          # No special filesystem type is enforced
-                  o: bind                                             # Binds the volume to a host directory
-                  device: ${HOME}/data/wordpress                      # The host directory where WordPress data (themes, plugins, uploads) will be stored
+# Define the custom network for inter-container communication
+networks:
+  inception:
+    driver: bridge

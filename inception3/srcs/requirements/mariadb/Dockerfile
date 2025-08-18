@@ -11,9 +11,9 @@ RUN apt-get install -y mariadb-server && \
 #optional i see is vim wget git mycli zsh and mariadb-client
 
 # Temporary environment variables for testing
-ENV DB_NAME=my_database
-ENV DB_USER=cool_user
-ENV DB_PASSWORD=cool_password
+# ENV DB_NAME=my_database
+# ENV DB_USER=cool_user
+# ENV DB_PASSWORD=cool_password
 
 
 #COPY ./tools/mariadb.cnf /etc/mysql/mariadb.conf.d/mariadb.cnf

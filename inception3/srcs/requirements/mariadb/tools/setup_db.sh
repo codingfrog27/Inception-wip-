@@ -12,7 +12,7 @@ echo "Initializing MariaDB with bootstrap..."
 {
     echo "FLUSH PRIVILEGES;"
     echo "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;"
-    echo "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD' REQUIRE NONE;"
+    echo "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS' REQUIRE NONE;"
     echo "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '$DB_USER'@'%';"
     echo "FLUSH PRIVILEGES;"
 } | mysqld --datadir=/var/lib/mysql --bootstrap
