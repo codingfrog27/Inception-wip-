@@ -29,12 +29,11 @@ RUN openssl req -x509 -nodes -newkey rsa:2048 \
 
 COPY ./tools/nginx.conf /etc/nginx/conf.d
 
-#to test seperately, copy in this index and make it the sandard index (and comment out the php loc)
-#COPY ./tools/index.html /var/www/html/wordpress/index.html
-#RUN chmod 777 /var/www/html/wordpress/index.html
 
-#listens to port 443 in docker network, but expose actually doesnt do anything the compose file handles this, its just for clarity
-#EXPOSE 443
+#listens to port 443 in docker network, 
+# (tho) expose actually doesnt do anything here, the docker file compose file handles this,
+# its just for clarity
+EXPOSE 443
 
 #start nginx in foregreound.. should this be entrypoint?
 CMD ["nginx", "-g", "daemon off;"]

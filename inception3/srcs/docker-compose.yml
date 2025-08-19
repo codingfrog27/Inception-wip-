@@ -1,6 +1,4 @@
-# Define the services (containers)
 services:
-  # MariaDB Database Service
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
@@ -53,19 +51,19 @@ services:
     depends_on:
       - wordpress
 
-# Define the volumes for persistent data storage
+# volumes allow you to use stora
 volumes:
   mariadb_data:
     driver: local
     driver_opts:
       type: none
-      device: ~/data/mariadb # Creates a folder in your home directory
+      device: ~/data/mariadb 
       o: bind
   wordpress_data:
     driver: local
     driver_opts:
       type: none
-      device: ~/data/wordpress # Creates a folder in your home directory
+      device: ~/data/wordpress
       o: bind
 
 # Define the custom network for inter-container communication
